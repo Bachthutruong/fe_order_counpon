@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../..
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { Label } from '../../components/ui/label';
+import { Switch } from '../../components/ui/switch';
+import { Separator } from '../../components/ui/separator';
 import { useToast } from '../../hooks/use-toast';
 
 const ConfigRules = () => {
@@ -11,7 +13,8 @@ const ConfigRules = () => {
     minDiscountPercent: 0,
     maxDiscountPercent: 100,
     minDiscountFixed: 0,
-    maxDiscountFixed: 999999999
+    maxDiscountFixed: 999999999,
+    applyRules: true
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -54,7 +57,20 @@ const ConfigRules = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border">
+              <div className="space-y-0.5">
+                <Label className="text-base">Kích hoạt quy tắc</Label>
+                <CardDescription>Nếu tắt, đại lý có thể tạo mã với giá trị bất kỳ</CardDescription>
+              </div>
+              <Switch 
+                checked={config.applyRules}
+                onCheckedChange={(checked) => setConfig({ ...config, applyRules: checked })}
+              />
+            </div>
+
+            <Separator />
+
+            <div className={`grid grid-cols-2 gap-4 transition-opacity ${!config.applyRules ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="space-y-2">
                 <Label htmlFor="minPercent">% Giảm Tối thiểu</Label>
                 <div className="relative">
@@ -63,7 +79,8 @@ const ConfigRules = () => {
                     type="number" 
                     value={config.minDiscountPercent} 
                     onChange={e => setConfig({ ...config, minDiscountPercent: Number(e.target.value) })}
-                    min={0} max={100} required 
+                    min={0} max={100} required={config.applyRules}
+                    disabled={!config.applyRules}
                   />
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                     <span className="text-gray-500 sm:text-sm">%</span>
@@ -78,7 +95,8 @@ const ConfigRules = () => {
                     type="number" 
                     value={config.maxDiscountPercent} 
                     onChange={e => setConfig({ ...config, maxDiscountPercent: Number(e.target.value) })}
-                    min={0} max={100} required 
+                    min={0} max={100} required={config.applyRules}
+                    disabled={!config.applyRules}
                   />
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                     <span className="text-gray-500 sm:text-sm">%</span>
@@ -87,7 +105,7 @@ const ConfigRules = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className={`grid grid-cols-2 gap-4 transition-opacity ${!config.applyRules ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="space-y-2">
                 <Label htmlFor="minFixed">Số tiền Giảm Tối thiểu</Label>
                 <div className="relative">
@@ -96,7 +114,8 @@ const ConfigRules = () => {
                     type="number" 
                     value={config.minDiscountFixed} 
                     onChange={e => setConfig({ ...config, minDiscountFixed: Number(e.target.value) })}
-                    min={0} required 
+                    min={0} required={config.applyRules}
+                    disabled={!config.applyRules}
                   />
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                     <span className="text-gray-500 sm:text-sm">VNĐ</span>
@@ -111,7 +130,8 @@ const ConfigRules = () => {
                     type="number" 
                     value={config.maxDiscountFixed} 
                     onChange={e => setConfig({ ...config, maxDiscountFixed: Number(e.target.value) })}
-                    min={0} required 
+                    min={0} required={config.applyRules}
+                    disabled={!config.applyRules}
                   />
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                     <span className="text-gray-500 sm:text-sm">VNĐ</span>

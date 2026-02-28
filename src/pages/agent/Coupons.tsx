@@ -23,6 +23,7 @@ const AgentCoupons = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ code: '', discountType: 'percent', discountValue: 0 });
 
   const [page, setPage] = useState(1);
@@ -50,17 +51,46 @@ const AgentCoupons = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/agent/coupons', formData);
+      if (editingId) {
+        await api.put(`/agent/coupons/${editingId}`, formData);
+        toast({ title: 'Thành công', description: 'Cập nhật mã giảm giá thành công!' });
+      } else {
+        await api.post('/agent/coupons', formData);
+        toast({ title: 'Thành công', description: 'Tạo mã giảm giá và đồng bộ thành công!' });
+      }
       setOpenDialog(false);
+      setEditingId(null);
       fetchData();
-      toast({ title: 'Thành công', description: 'Tạo mã giảm giá và đồng bộ thành công!' });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi tạo mã giảm giá' });
+      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi thao tác' });
+    }
+  };
+
+  const deleteCoupon = async (id: string) => {
+    if (window.confirm('Bạn có chắc chắn xoá mã giảm giá này?')) {
+      try {
+        await api.delete(`/agent/coupons/${id}`);
+        fetchData();
+        toast({ title: 'Thành công', description: 'Xoá mã giảm giá thành công!' });
+      } catch (error: any) {
+        toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Xoá thất bại' });
+      }
     }
   };
 
   const openAdd = () => {
+    setEditingId(null);
     setFormData({ code: '', discountType: 'percent', discountValue: 0 });
+    setOpenDialog(true);
+  };
+
+  const openEdit = (coupon: Coupon) => {
+    setEditingId(coupon._id);
+    setFormData({ 
+      code: coupon.code, 
+      discountType: coupon.discountType, 
+      discountValue: coupon.discountValue 
+    });
     setOpenDialog(true);
   };
 
@@ -98,7 +128,8 @@ const AgentCoupons = () => {
                 <TableHead>Loại Giảm</TableHead>
                 <TableHead className="text-right">Mức Giảm</TableHead>
                 <TableHead>Trạng Thái</TableHead>
-                <TableHead className="text-right">Ngày Tạo</TableHead>
+                <TableHead>Ngày Tạo</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -114,7 +145,11 @@ const AgentCoupons = () => {
                   <TableCell>
                       <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-md font-medium">Hoạt động</span>
                   </TableCell>
-                  <TableCell className="text-right">{new Date(coupon.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(coupon.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => openEdit(coupon)}>Sửa</Button>
+                    <Button variant="destructive" size="sm" onClick={() => deleteCoupon(coupon._id)}>Xoá</Button>
+                  </TableCell>
                 </TableRow>
               ))}
               {coupons.length === 0 && (
@@ -139,12 +174,19 @@ const AgentCoupons = () => {
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tạo Mã Khuyến Mãi</DialogTitle>
+            <DialogTitle>{editingId ? 'Chỉnh sửa mã khuyến mãi' : 'Tạo Mã Khuyến Mãi'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-4">
             <div className="space-y-2">
               <Label htmlFor="code">Nhập Mã Code</Label>
-              <Input id="code" value={formData.code} onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})} required placeholder="Ví dụ: DAI-LY-HANOI-123" />
+              <Input 
+                id="code" 
+                value={formData.code} 
+                onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})} 
+                required 
+                placeholder="Ví dụ: DAI-LY-HANOI-123" 
+                disabled={!!editingId}
+              />
             </div>
 
             <div className="space-y-2">
@@ -168,7 +210,9 @@ const AgentCoupons = () => {
 
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>Huỷ bỏ</Button>
-              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">Tạo mới</Button>
+              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
+                {editingId ? 'Lưu thay đổi' : 'Tạo mới'}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

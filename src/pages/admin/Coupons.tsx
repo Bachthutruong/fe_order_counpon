@@ -30,6 +30,7 @@ const Coupons = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ code: '', discountType: 'percent', discountValue: 0, agentId: '' });
 
   const [page, setPage] = useState(1);
@@ -65,12 +66,18 @@ const Coupons = () => {
          toast({ variant: 'destructive', title: 'Thiếu thông tin', description: 'Vui lòng chọn đại lý!' });
          return;
       }
-      await api.post('/admin/coupons', formData);
+      if (editingId) {
+        await api.put(`/admin/coupons/${editingId}`, formData);
+        toast({ title: 'Thành công', description: 'Cập nhật mã giảm giá thành công!' });
+      } else {
+        await api.post('/admin/coupons', formData);
+        toast({ title: 'Thành công', description: 'Tạo mã giảm giá và đồng bộ thành công!' });
+      }
       setOpenDialog(false);
+      setEditingId(null);
       fetchData();
-      toast({ title: 'Thành công', description: 'Tạo mã giảm giá và đồng bộ thành công!' });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi tạo mã giảm giá' });
+      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi thao tác' });
     }
   };
 
@@ -87,7 +94,19 @@ const Coupons = () => {
   };
 
   const openAdd = () => {
+    setEditingId(null);
     setFormData({ code: '', discountType: 'percent', discountValue: 0, agentId: '' });
+    setOpenDialog(true);
+  };
+
+  const openEdit = (coupon: Coupon) => {
+    setEditingId(coupon._id);
+    setFormData({ 
+      code: coupon.code, 
+      discountType: coupon.discountType, 
+      discountValue: coupon.discountValue,
+      agentId: coupon.agentId?._id || ''
+    });
     setOpenDialog(true);
   };
 
@@ -152,7 +171,8 @@ const Coupons = () => {
                   </TableCell>
                   <TableCell>{coupon.agentId ? coupon.agentId.name : 'N/A'}</TableCell>
                   <TableCell>{new Date(coupon.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => openEdit(coupon)}>Sửa</Button>
                     <Button variant="destructive" size="sm" onClick={() => deleteCoupon(coupon._id)}>Xoá</Button>
                   </TableCell>
                 </TableRow>
@@ -179,12 +199,19 @@ const Coupons = () => {
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tạo mã giảm giá mới (Cấp Admin)</DialogTitle>
+            <DialogTitle>{editingId ? 'Chỉnh sửa mã giảm giá' : 'Tạo mã giảm giá mới (Cấp Admin)'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-4">
             <div className="space-y-2">
               <Label htmlFor="code">Mã code</Label>
-              <Input id="code" value={formData.code} onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})} required placeholder="Ví dụ: SAVE2023" />
+              <Input 
+                id="code" 
+                value={formData.code} 
+                onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})} 
+                required 
+                placeholder="Ví dụ: SAVE2023" 
+                disabled={!!editingId} // Code should not be editable usually
+              />
             </div>
 
             <div className="space-y-2">
@@ -221,7 +248,7 @@ const Coupons = () => {
 
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>Huỷ</Button>
-              <Button type="submit">Tạo & Đồng bộ WordPress</Button>
+              <Button type="submit">{editingId ? 'Lưu thay đổi' : 'Tạo & Đồng bộ WordPress'}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
