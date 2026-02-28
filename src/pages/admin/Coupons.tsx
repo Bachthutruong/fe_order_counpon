@@ -38,6 +38,7 @@ const Coupons = () => {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
   const [agentFilter, setAgentFilter] = useState('all');
+  const [syncing, setSyncing] = useState(false);
   const { toast } = useToast();
 
   const fetchData = async () => {
@@ -81,6 +82,19 @@ const Coupons = () => {
     }
   };
 
+  const syncToWc = async () => {
+    setSyncing(true);
+    try {
+      const { data } = await api.post('/wc/sync-coupons');
+      toast({ title: 'Đồng bộ hoàn tất', description: data.message });
+      fetchData();
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Lỗi đồng bộ', description: error.response?.data?.message || 'Lỗi hệ thống' });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const deleteCoupon = async (id: string) => {
     if (window.confirm('Bạn có chắc chắn xoá mã giảm giá này (Đồng bộ xoá từ WordPress)?')) {
       try {
@@ -116,7 +130,12 @@ const Coupons = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold tracking-tight">Mã Quản Lý Giảm Giá</h1>
-        <Button onClick={openAdd}>Tạo mới Mã KH</Button>
+        <div className="space-x-2">
+            <Button variant="outline" onClick={syncToWc} disabled={syncing}>
+                {syncing ? 'Đang đồng bộ...' : 'Đẩy mã lên WordPress'}
+            </Button>
+            <Button onClick={openAdd}>Tạo mới Mã KH</Button>
+        </div>
       </div>
 
       <Card>
