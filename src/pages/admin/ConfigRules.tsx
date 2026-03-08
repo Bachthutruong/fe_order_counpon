@@ -14,7 +14,8 @@ const ConfigRules = () => {
     maxDiscountPercent: 100,
     minDiscountFixed: 0,
     maxDiscountFixed: 999999999,
-    applyRules: true
+    applyRules: true,
+    defaultAgentPassword: ''
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -38,29 +39,29 @@ const ConfigRules = () => {
     e.preventDefault();
     try {
       await api.put('/admin/config', config);
-      toast({ title: 'Thành công', description: 'Đã cập nhật cấu hình thành công!' });
+      toast({ title: '成功', description: '設定已更新！' });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi cập nhật cấu hình' });
+      toast({ variant: 'destructive', title: '錯誤', description: error.response?.data?.message || '設定更新失敗' });
     }
   };
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) return <div>載入中...</div>;
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">Cấu hình Quy tắc Mã giảm giá</h1>
+      <h1 className="text-2xl font-bold tracking-tight">折扣碼規則設定</h1>
       
       <Card className="max-w-2xl">
         <CardHeader>
-          <CardTitle>Quy tắc tạo mã cho Đại lý</CardTitle>
-          <CardDescription>Cài đặt giới hạn tối thiểu và tối đa khi đại lý tạo mã giảm giá</CardDescription>
+          <CardTitle>經銷商建立折扣碼規則</CardTitle>
+          <CardDescription>設定經銷商建立折扣碼時的最低與最高限額</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border">
               <div className="space-y-0.5">
-                <Label className="text-base">Kích hoạt quy tắc</Label>
-                <CardDescription>Nếu tắt, đại lý có thể tạo mã với giá trị bất kỳ</CardDescription>
+                <Label className="text-base">啟用規則</Label>
+                <CardDescription>若關閉，經銷商可建立任意金額的折扣碼</CardDescription>
               </div>
               <Switch 
                 checked={config.applyRules}
@@ -72,7 +73,7 @@ const ConfigRules = () => {
 
             <div className={`grid grid-cols-2 gap-4 transition-opacity ${!config.applyRules ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="space-y-2">
-                <Label htmlFor="minPercent">% Giảm Tối thiểu</Label>
+                <Label htmlFor="minPercent">最低折扣 %</Label>
                 <div className="relative">
                   <Input 
                     id="minPercent" 
@@ -88,7 +89,7 @@ const ConfigRules = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="maxPercent">% Giảm Tối đa</Label>
+                <Label htmlFor="maxPercent">最高折扣 %</Label>
                  <div className="relative">
                   <Input 
                     id="maxPercent" 
@@ -107,7 +108,7 @@ const ConfigRules = () => {
 
             <div className={`grid grid-cols-2 gap-4 transition-opacity ${!config.applyRules ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="space-y-2">
-                <Label htmlFor="minFixed">Số tiền Giảm Tối thiểu</Label>
+                <Label htmlFor="minFixed">最低折扣金額</Label>
                 <div className="relative">
                   <Input 
                     id="minFixed" 
@@ -118,12 +119,12 @@ const ConfigRules = () => {
                     disabled={!config.applyRules}
                   />
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                    <span className="text-gray-500 sm:text-sm">VNĐ</span>
+                    <span className="text-gray-500 sm:text-sm">NT$</span>
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="maxFixed">Số tiền Giảm Tối đa</Label>
+                <Label htmlFor="maxFixed">最高折扣金額</Label>
                 <div className="relative">
                   <Input 
                     id="maxFixed" 
@@ -134,14 +135,28 @@ const ConfigRules = () => {
                     disabled={!config.applyRules}
                   />
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                    <span className="text-gray-500 sm:text-sm">VNĐ</span>
+                    <span className="text-gray-500 sm:text-sm">NT$</span>
                   </div>
                 </div>
               </div>
             </div>
 
+            <Separator />
+
+            <div className="space-y-2">
+              <Label htmlFor="defaultAgentPassword">新經銷商預設密碼</Label>
+              <Input
+                id="defaultAgentPassword"
+                type="text"
+                value={config.defaultAgentPassword ?? ''}
+                onChange={e => setConfig({ ...config, defaultAgentPassword: e.target.value })}
+                placeholder="留空則為 123456789"
+              />
+              <CardDescription>管理員新增經銷商時，該經銷商首次登入將使用此密碼（建議登入後變更）。</CardDescription>
+            </div>
+
             <Button type="submit" className="w-full">
-              Lưu Cấu hình
+              儲存設定
             </Button>
           </form>
         </CardContent>

@@ -6,24 +6,26 @@ import {
   Settings, 
   Ticket, 
   ShoppingCart, 
-  LogOut
+  LogOut,
+  BarChart3
 } from 'lucide-react';
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
   
   const adminLinks = [
-    { name: 'Tổng quan', path: '/admin', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: 'Đại lý', path: '/admin/agents', icon: <Users className="w-5 h-5" /> },
-    { name: 'Mã giảm giá', path: '/admin/coupons', icon: <Ticket className="w-5 h-5" /> },
-    { name: 'Đơn hàng', path: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },
-    { name: 'Cấu hình', path: '/admin/config', icon: <Settings className="w-5 h-5" /> },
+    { name: '總覽', path: '/admin', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: '經銷商', path: '/admin/agents', icon: <Users className="w-5 h-5" /> },
+    { name: '折扣碼', path: '/admin/coupons', icon: <Ticket className="w-5 h-5" /> },
+    { name: '訂單', path: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },
+    { name: '營收統計', path: '/admin/revenue-stats', icon: <BarChart3 className="w-5 h-5" /> },
+    { name: '設定', path: '/admin/config', icon: <Settings className="w-5 h-5" /> },
   ];
 
   const agentLinks = [
-    { name: 'Tổng quan', path: '/agent', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: 'Mã giảm giá', path: '/agent/coupons', icon: <Ticket className="w-5 h-5" /> },
-    { name: 'Đơn hàng', path: '/agent/orders', icon: <ShoppingCart className="w-5 h-5" /> },
+    { name: '總覽', path: '/agent', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: '折扣碼', path: '/agent/coupons', icon: <Ticket className="w-5 h-5" /> },
+    { name: '訂單', path: '/agent/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   ];
 
   const links = user?.role === 'ADMIN' ? adminLinks : agentLinks;
@@ -31,7 +33,7 @@ const Sidebar = () => {
   return (
     <div className="w-64 h-full bg-slate-900 text-white flex flex-col">
       <div className="p-4 border-b border-slate-800">
-        <h1 className="text-xl font-bold">Jiudi Manager</h1>
+        <h1 className="text-xl font-bold">Jiudi 管理系統</h1>
       </div>
       <div className="flex-1 py-4">
         <ul className="space-y-1">
@@ -57,7 +59,7 @@ const Sidebar = () => {
           className="flex items-center space-x-3 text-slate-300 hover:text-white transition-colors w-full px-4 py-2"
         >
           <LogOut className="w-5 h-5" />
-          <span>Đăng xuất</span>
+          <span>登出</span>
         </button>
       </div>
     </div>

@@ -26,7 +26,7 @@ const Login = () => {
         navigate(data.role === 'ADMIN' ? '/admin' : '/agent');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || '登入失敗');
     }
   };
 
@@ -35,18 +35,18 @@ const Login = () => {
       <div className="absolute inset-0 z-0 bg-blue-500/10 skew-y-12 h-[50vh] blur-3xl transform"></div>
       <Card className="w-[400px] z-10 shadow-xl border-t-4 border-blue-500 rounded-xl">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl font-bold text-slate-800">Jiudi Hệ Thống</CardTitle>
-          <CardDescription>Đăng nhập để vào trang quản lý</CardDescription>
+          <CardTitle className="text-2xl font-bold text-slate-800">Jiudi 系統</CardTitle>
+          <CardDescription>登入管理後台</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && <div className="p-3 text-sm text-red-500 bg-red-100/50 rounded-md border border-red-200">{error}</div>}
             <div className="space-y-2">
-              <Label htmlFor="phone">Số điện thoại</Label>
+              <Label htmlFor="phone">電話號碼</Label>
               <Input 
                 id="phone" 
                 type="text" 
-                placeholder="Nhập số điện thoại..." 
+                placeholder="請輸入電話號碼..." 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
@@ -54,7 +54,7 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
+              <Label htmlFor="password">密碼</Label>
               <Input 
                 id="password" 
                 type="password" 
@@ -68,7 +68,7 @@ const Login = () => {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/30">
-              Đăng nhập
+              登入
             </Button>
           </CardFooter>
         </form>

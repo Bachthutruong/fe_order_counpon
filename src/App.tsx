@@ -14,6 +14,7 @@ import Agents from './pages/admin/Agents';
 import ConfigRules from './pages/admin/ConfigRules';
 import AdminCoupons from './pages/admin/Coupons';
 import AdminOrders from './pages/admin/Orders';
+import RevenueStats from './pages/admin/RevenueStats';
 
 // Agent
 import AgentDashboard from './pages/agent/Dashboard';
@@ -53,6 +54,7 @@ function App() {
             <Route path="config" element={<ConfigRules />} />
             <Route path="coupons" element={<AdminCoupons />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="revenue-stats" element={<RevenueStats />} />
           </Route>
 
           <Route path="/agent" element={

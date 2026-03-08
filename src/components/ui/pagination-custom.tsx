@@ -16,12 +16,12 @@ export const Pagination: React.FC<PaginationProps> = ({ page, limit, total, onPa
   return (
     <div className="flex items-center justify-between px-2 py-4 border-t">
       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-        <span>Hiển thị</span>
+        <span>每頁</span>
         <Select 
           value={limit.toString()} 
           onValueChange={(val) => {
             onLimitChange(Number(val));
-            onPageChange(1); // Reset page on limit change
+            onPageChange(1);
           }}
         >
           <SelectTrigger className="w-[80px] h-8">
@@ -35,12 +35,12 @@ export const Pagination: React.FC<PaginationProps> = ({ page, limit, total, onPa
             ))}
           </SelectContent>
         </Select>
-        <span>dòng / trang</span>
+        <span>筆</span>
       </div>
 
       <div className="flex items-center space-x-4">
         <div className="text-sm text-muted-foreground">
-          Trang {page} / {totalPages} (Tổng số: {total})
+          第 {page} / {totalPages} 頁（共 {total} 筆）
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -49,7 +49,7 @@ export const Pagination: React.FC<PaginationProps> = ({ page, limit, total, onPa
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
           >
-            Trước
+            上一頁
           </Button>
           <Button
             variant="outline"
@@ -57,7 +57,7 @@ export const Pagination: React.FC<PaginationProps> = ({ page, limit, total, onPa
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
           >
-            Sau
+            下一頁
           </Button>
         </div>
       </div>

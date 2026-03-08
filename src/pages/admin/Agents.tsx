@@ -59,14 +59,14 @@ const Agents = () => {
       }
       setOpenDialog(false);
       fetchAgents();
-      toast({ title: 'Thành công', description: 'Cập nhật đại lý thành công!' });
+      toast({ title: '成功', description: '已更新經銷商！' });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi lưu dữ liệu' });
+      toast({ variant: 'destructive', title: '錯誤', description: error.response?.data?.message || '儲存失敗' });
     }
   };
 
   const deleteAgent = async (id: string) => {
-    if (window.confirm('Bạn có chắc xoá đại lý này? Các dữ liệu liên quan có thể bị ảnh hưởng!')) {
+    if (window.confirm('確定要刪除此經銷商嗎？相關資料可能受影響！')) {
       try {
         await api.delete(`/admin/agents/${id}`);
         fetchAgents();
@@ -88,22 +88,22 @@ const Agents = () => {
     setOpenDialog(true);
   };
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) return <div>載入中...</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Quản lý Đại lý</h1>
-        <Button onClick={openAdd}>Thêm Đại lý mới</Button>
+        <h1 className="text-2xl font-bold tracking-tight">經銷商管理</h1>
+        <Button onClick={openAdd}>新增經銷商</Button>
       </div>
 
       <Card>
         <CardHeader className="space-y-4">
-          <CardTitle>Danh sách đại lý</CardTitle>
+          <CardTitle>經銷商列表</CardTitle>
           <div className="flex w-full max-w-sm items-center space-x-2">
             <Input 
               type="text" 
-              placeholder="Tìm kiếm theo tên hoặc SĐT..." 
+              placeholder="依姓名或電話搜尋..." 
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -116,10 +116,10 @@ const Agents = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Tên</TableHead>
-                <TableHead>Số điện thoại</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
+                <TableHead>姓名</TableHead>
+                <TableHead>電話號碼</TableHead>
+                <TableHead>狀態</TableHead>
+                <TableHead className="text-right">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -129,19 +129,19 @@ const Agents = () => {
                   <TableCell>{agent.phone}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${agent.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {agent.active ? 'Hoạt động' : 'Đã khoá'}
+                      {agent.active ? '啟用' : '已停用'}
                     </span>
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => openEdit(agent)}>Sửa</Button>
-                    <Button variant="destructive" size="sm" onClick={() => deleteAgent(agent._id)}>Xoá</Button>
+                    <Button variant="outline" size="sm" onClick={() => openEdit(agent)}>編輯</Button>
+                    <Button variant="destructive" size="sm" onClick={() => deleteAgent(agent._id)}>刪除</Button>
                   </TableCell>
                 </TableRow>
               ))}
               {agents.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                    Không có đại lý nào
+                    尚無經銷商
                   </TableCell>
                 </TableRow>
               )}
@@ -160,17 +160,17 @@ const Agents = () => {
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingAgent ? 'Сập nhật Đại lý' : 'Thêm Đại lý'}</DialogTitle>
+            <DialogTitle>{editingAgent ? '更新經銷商' : '新增經銷商'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Tên Đại lý</Label>
+              <Label htmlFor="name">經銷商名稱</Label>
               <Input id="name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Số điện thoại</Label>
+              <Label htmlFor="phone">電話號碼</Label>
               <Input id="phone" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required />
-              {!editingAgent && <p className="text-xs text-muted-foreground mt-1">Mật khẩu mặc định: 123456789</p>}
+              {!editingAgent && <p className="text-xs text-muted-foreground mt-1">預設密碼：123456789</p>}
             </div>
             {editingAgent && (
               <div className="flex items-center space-x-2 mt-4">
@@ -181,12 +181,12 @@ const Agents = () => {
                   onChange={e => setFormData({...formData, active: e.target.checked})} 
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <Label htmlFor="active" className="font-normal cursor-pointer">Cho phép hoạt động</Label>
+                <Label htmlFor="active" className="font-normal cursor-pointer">允許啟用</Label>
               </div>
             )}
             <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>Huỷ</Button>
-              <Button type="submit">Lưu lại</Button>
+              <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>取消</Button>
+              <Button type="submit">儲存</Button>
             </DialogFooter>
           </form>
         </DialogContent>

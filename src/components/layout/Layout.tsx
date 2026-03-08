@@ -8,7 +8,7 @@ const Layout = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="h-screen flex items-center justify-center">載入中...</div>;
   }
 
   if (!user) {
@@ -43,12 +43,12 @@ const Layout = () => {
               </Sheet>
             </div>
             <h2 className="text-xl font-semibold text-slate-800 truncate">
-              Xin chào, {user.name}
+              您好，{user.name}
             </h2>
           </div>
           <div className="flex items-center space-x-2 md:space-x-4">
             <span className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-              {user.role === 'ADMIN' ? 'Admin' : 'Đại lý'}
+              {user.role === 'ADMIN' ? '管理員' : '經銷商'}
             </span>
           </div>
         </header>

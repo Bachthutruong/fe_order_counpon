@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../lib/api';
+import { formatCurrency } from '../../lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid, Legend } from 'recharts';
 
@@ -26,24 +27,24 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">Tổng quan hệ thống</h1>
+      <h1 className="text-2xl font-bold tracking-tight">系統總覽</h1>
       
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng doanh thu</CardTitle>
+            <CardTitle className="text-sm font-medium">總營收</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.totalRevenue)}
+              {formatCurrency(stats.totalRevenue)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Đã bao gồm các đơn có/không có mã</p>
+            <p className="text-xs text-muted-foreground mt-1">含使用／未使用折扣碼之訂單</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng đơn hàng</CardTitle>
+            <CardTitle className="text-sm font-medium">總訂單數</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalOrders}</div>
@@ -52,11 +53,11 @@ const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng giảm giá đã cấp</CardTitle>
+            <CardTitle className="text-sm font-medium">已發放折扣總額</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.discountGiven)}
+              {formatCurrency(stats.discountGiven)}
             </div>
           </CardContent>
         </Card>
@@ -65,8 +66,8 @@ const AdminDashboard = () => {
       <div className="grid gap-4 md:grid-cols-2 mt-8 w-full block">
         <Card>
           <CardHeader>
-            <CardTitle>Biểu đồ Doanh thu</CardTitle>
-            <CardDescription>Theo dõi biến động doanh thu theo ngày</CardDescription>
+            <CardTitle>營收圖表</CardTitle>
+            <CardDescription>依日營收變動</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] w-full">
@@ -74,10 +75,10 @@ const AdminDashboard = () => {
                 <BarChart data={dailyData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis dataKey="revenue" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => new Intl.NumberFormat('vi-VN', { notation: 'compact', compactDisplay: 'short' }).format(value)} />
-                  <RechartsTooltip formatter={(value: any) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)} />
+                  <YAxis dataKey="revenue" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => formatCurrency(value)} />
+                  <RechartsTooltip formatter={(value: any) => formatCurrency(value)} />
                   <Legend />
-                  <Bar dataKey="revenue" name="Doanh thu" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="revenue" name="營收" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -86,8 +87,8 @@ const AdminDashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Biểu đồ Đơn hàng</CardTitle>
-            <CardDescription>Số lượng đơn hàng mỗi ngày</CardDescription>
+            <CardTitle>訂單數圖表</CardTitle>
+            <CardDescription>每日訂單數量</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] w-full">
@@ -98,7 +99,7 @@ const AdminDashboard = () => {
                   <YAxis dataKey="orders" fontSize={12} tickLine={false} axisLine={false} />
                   <RechartsTooltip />
                   <Legend />
-                  <Bar dataKey="orders" name="Đơn hàng" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="orders" name="訂單" fill="#10b981" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

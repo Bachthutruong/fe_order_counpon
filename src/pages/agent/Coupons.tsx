@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../lib/api';
+import { formatCurrency } from '../../lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
@@ -53,27 +54,27 @@ const AgentCoupons = () => {
     try {
       if (editingId) {
         await api.put(`/agent/coupons/${editingId}`, formData);
-        toast({ title: 'Thành công', description: 'Cập nhật mã giảm giá thành công!' });
+        toast({ title: '成功', description: '折扣碼已更新！' });
       } else {
         await api.post('/agent/coupons', formData);
-        toast({ title: 'Thành công', description: 'Tạo mã giảm giá và đồng bộ thành công!' });
+        toast({ title: '成功', description: '已建立折扣碼並同步！' });
       }
       setOpenDialog(false);
       setEditingId(null);
       fetchData();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Lỗi thao tác' });
+      toast({ variant: 'destructive', title: '錯誤', description: error.response?.data?.message || '操作失敗' });
     }
   };
 
   const deleteCoupon = async (id: string) => {
-    if (window.confirm('Bạn có chắc chắn xoá mã giảm giá này?')) {
+    if (window.confirm('確定要刪除此折扣碼嗎？')) {
       try {
         await api.delete(`/agent/coupons/${id}`);
         fetchData();
-        toast({ title: 'Thành công', description: 'Xoá mã giảm giá thành công!' });
+        toast({ title: '成功', description: '折扣碼已刪除！' });
       } catch (error: any) {
-        toast({ variant: 'destructive', title: 'Lỗi', description: error.response?.data?.message || 'Xoá thất bại' });
+        toast({ variant: 'destructive', title: '錯誤', description: error.response?.data?.message || '刪除失敗' });
       }
     }
   };
@@ -94,23 +95,23 @@ const AgentCoupons = () => {
     setOpenDialog(true);
   };
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) return <div>載入中...</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Mã Giảm Giá Của Tôi</h1>
-        <Button onClick={openAdd} className="bg-indigo-600 hover:bg-indigo-700">Tạo mã mới</Button>
+        <h1 className="text-2xl font-bold tracking-tight">我的折扣碼</h1>
+        <Button onClick={openAdd} className="bg-indigo-600 hover:bg-indigo-700">新增折扣碼</Button>
       </div>
 
       <Card>
         <CardHeader className="space-y-4">
-          <CardTitle>Danh Sách Mã Giảm Giá</CardTitle>
-          <CardDescription>Các mã này được đồng bộ trực tiếp lên hệ thống bán hàng và tự động theo dõi doanh thu.</CardDescription>
+          <CardTitle>折扣碼列表</CardTitle>
+          <CardDescription>折扣碼會同步至銷售系統並自動追蹤營收</CardDescription>
           <div className="flex w-full md:max-w-sm items-center space-x-2">
             <Input 
               type="text" 
-              placeholder="Tìm kiếm mã code..." 
+              placeholder="搜尋折扣碼..." 
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -124,38 +125,38 @@ const AgentCoupons = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mã (Code)</TableHead>
-                <TableHead>Loại Giảm</TableHead>
-                <TableHead className="text-right">Mức Giảm</TableHead>
-                <TableHead>Trạng Thái</TableHead>
-                <TableHead>Ngày Tạo</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
+                <TableHead>代碼</TableHead>
+                <TableHead>折扣類型</TableHead>
+                <TableHead className="text-right">折扣額</TableHead>
+                <TableHead>狀態</TableHead>
+                <TableHead>建立日期</TableHead>
+                <TableHead className="text-right">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {coupons.map((coupon) => (
                 <TableRow key={coupon._id}>
                   <TableCell className="font-bold text-indigo-600 uppercase">{coupon.code}</TableCell>
-                  <TableCell>{coupon.discountType === 'percent' ? 'Tỉ lệ %' : 'Số tiền cố định'}</TableCell>
+                  <TableCell>{coupon.discountType === 'percent' ? '比例 %' : '固定金額'}</TableCell>
                   <TableCell className="text-right">
                     {coupon.discountType === 'percent' 
                       ? `${coupon.discountValue}%` 
-                      : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(coupon.discountValue)}
+                      : formatCurrency(coupon.discountValue)}
                   </TableCell>
                   <TableCell>
-                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-md font-medium">Hoạt động</span>
+                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-md font-medium">啟用</span>
                   </TableCell>
                   <TableCell>{new Date(coupon.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => openEdit(coupon)}>Sửa</Button>
-                    <Button variant="destructive" size="sm" onClick={() => deleteCoupon(coupon._id)}>Xoá</Button>
+                    <Button variant="outline" size="sm" onClick={() => openEdit(coupon)}>編輯</Button>
+                    <Button variant="destructive" size="sm" onClick={() => deleteCoupon(coupon._id)}>刪除</Button>
                   </TableCell>
                 </TableRow>
               ))}
               {coupons.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-muted-foreground h-24">
-                    Chưa có mã giảm giá nào
+                    尚無折扣碼
                   </TableCell>
                 </TableRow>
               )}
@@ -174,44 +175,44 @@ const AgentCoupons = () => {
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingId ? 'Chỉnh sửa mã khuyến mãi' : 'Tạo Mã Khuyến Mãi'}</DialogTitle>
+            <DialogTitle>{editingId ? '編輯折扣碼' : '新增折扣碼'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label htmlFor="code">Nhập Mã Code</Label>
+              <Label htmlFor="code">輸入折扣碼</Label>
               <Input 
                 id="code" 
                 value={formData.code} 
                 onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})} 
                 required 
-                placeholder="Ví dụ: DAI-LY-HANOI-123" 
+                placeholder="例：DEALER-TPE-001" 
                 disabled={!!editingId}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Loại Khuyến Mãi</Label>
+              <Label>折扣類型</Label>
               <Select value={formData.discountType} onValueChange={(value) => setFormData({...formData, discountType: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Chọn loại giảm giá" />
+                  <SelectValue placeholder="選擇折扣類型" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="percent">Giảm theo tỷ lệ %</SelectItem>
-                  <SelectItem value="fixed_cart">Giảm tiền mặt (đơn hàng)</SelectItem>
+                  <SelectItem value="percent">依比例 %</SelectItem>
+                  <SelectItem value="fixed_cart">固定金額（訂單）</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="value">Mức giảm ({formData.discountType === 'percent' ? '%' : 'VNĐ'})</Label>
+              <Label htmlFor="value">折扣額 ({formData.discountType === 'percent' ? '%' : 'NT$'})</Label>
               <Input id="value" type="number" min={1} value={formData.discountValue} onChange={e => setFormData({...formData, discountValue: Number(e.target.value)})} required />
-              <p className="text-xs text-muted-foreground">Tuân thủ giới hạn thiết lập bởi Admin để được duyệt.</p>
+              <p className="text-xs text-muted-foreground">須符合管理員設定之限額方可通過。</p>
             </div>
 
             <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>Huỷ bỏ</Button>
+              <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>取消</Button>
               <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
-                {editingId ? 'Lưu thay đổi' : 'Tạo mới'}
+                {editingId ? '儲存' : '新增'}
               </Button>
             </DialogFooter>
           </form>

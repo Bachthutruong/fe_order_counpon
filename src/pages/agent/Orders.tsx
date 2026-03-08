@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../lib/api';
+import { formatCurrency } from '../../lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Input } from '../../components/ui/input';
@@ -55,17 +56,17 @@ const AgentOrders = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Đơn Hàng & Hoa Hồng</h1>
+        <h1 className="text-2xl font-bold tracking-tight">訂單與佣金</h1>
       </div>
 
       <Card>
         <CardHeader className="space-y-4">
-          <CardTitle>Danh Sách Đơn Của Đại Lý</CardTitle>
-          <CardDescription>Bao gồm những đơn hàng khách đã mua thông qua thẻ mã giảm giá của đại lý này.</CardDescription>
+          <CardTitle>本經銷商訂單列表</CardTitle>
+          <CardDescription>客戶透過您的折扣碼所下之訂單</CardDescription>
           <div className="flex w-full md:max-w-sm items-center space-x-2">
             <Input 
               type="text" 
-              placeholder="Tìm kiếm khách/mã..." 
+              placeholder="搜尋客戶／折扣碼..." 
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -77,18 +78,18 @@ const AgentOrders = () => {
         </CardHeader>
         <CardContent>
           {loading ? (
-             <div className="text-center py-4 text-muted-foreground">Đang tải...</div>
+             <div className="text-center py-4 text-muted-foreground">載入中...</div>
           ) : (
             <>
               <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Mã L/W</TableHead>
-                  <TableHead>Khách Hàng</TableHead>
-                  <TableHead className="text-right">Hoa hồng (Doanh Thu)</TableHead>
-                  <TableHead>Mã Đã Dùng</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead className="text-right">Ngày</TableHead>
+                  <TableHead>訂單編號</TableHead>
+                  <TableHead>客戶</TableHead>
+                  <TableHead className="text-right">佣金（營收）</TableHead>
+                  <TableHead>使用之折扣碼</TableHead>
+                  <TableHead>狀態</TableHead>
+                  <TableHead className="text-right">日期</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -98,7 +99,7 @@ const AgentOrders = () => {
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell className="text-right">
                       <span className="font-bold text-green-600">
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total)}
+                          {formatCurrency(order.total)}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -110,14 +111,14 @@ const AgentOrders = () => {
                         </span>
                     </TableCell>
                     <TableCell className="text-right text-muted-foreground text-sm">
-                      {new Date(order.dateCreated).toLocaleDateString('vi-VN')}
+                      {new Date(order.dateCreated).toLocaleDateString('zh-TW')}
                     </TableCell>
                   </TableRow>
                 ))}
                 {orders.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center text-muted-foreground h-24">
-                      Hiện chưa có đơn hàng nào
+                      尚無訂單
                     </TableCell>
                   </TableRow>
                 )}

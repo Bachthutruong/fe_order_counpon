@@ -18,7 +18,7 @@ const ChangePassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setError('Mật khẩu nhập lại không khớp');
+      setError('兩次輸入的密碼不一致');
       return;
     }
 
@@ -28,7 +28,7 @@ const ChangePassword = () => {
       await checkAuth(); // Assuming we export checkAuth or update user state
       navigate(user?.role === 'ADMIN' ? '/admin' : '/agent');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Đổi mật khẩu thất bại');
+      setError(err.response?.data?.message || '變更密碼失敗');
     }
   };
 
@@ -38,18 +38,18 @@ const ChangePassword = () => {
       <Card className="w-[450px] z-10 shadow-xl border-t-4 border-indigo-500 rounded-xl relative">
         {user?.isFirstLogin && (
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-1 rounded-full text-xs font-medium shadow">
-            Yêu cầu đổi mật khẩu
+            請先變更密碼
           </div>
         )}
         <CardHeader className="text-center pt-8">
-          <CardTitle className="text-2xl font-bold">Đổi mật khẩu tủ</CardTitle>
-          <CardDescription>Vui lòng đổi mật khẩu để tiếp tục</CardDescription>
+          <CardTitle className="text-2xl font-bold">變更密碼</CardTitle>
+          <CardDescription>請變更密碼以繼續使用</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && <div className="p-3 text-sm text-red-500 bg-red-100/50 rounded-md border border-red-200">{error}</div>}
             <div className="space-y-2">
-              <Label>Mật khẩu hiện tại</Label>
+              <Label>目前密碼</Label>
               <Input 
                 type="password" 
                 value={oldPassword}
@@ -59,7 +59,7 @@ const ChangePassword = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label>Mật khẩu mới</Label>
+              <Label>新密碼</Label>
               <Input 
                 type="password" 
                 value={newPassword}
@@ -69,7 +69,7 @@ const ChangePassword = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label>Nhập lại mật khẩu mới</Label>
+              <Label>再次輸入新密碼</Label>
               <Input 
                 type="password" 
                 value={confirmPassword}
@@ -81,7 +81,7 @@ const ChangePassword = () => {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/30">
-              Đổi mật khẩu & Tiếp tục
+              變更密碼並繼續
             </Button>
           </CardFooter>
         </form>
