@@ -35,7 +35,7 @@ const Login = () => {
       <div className="absolute inset-0 z-0 bg-blue-500/10 skew-y-12 h-[50vh] blur-3xl transform"></div>
       <Card className="w-[400px] z-10 shadow-xl border-t-4 border-blue-500 rounded-xl">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl font-bold text-slate-800">Jiudi 系統</CardTitle>
+          <CardTitle className="text-2xl font-bold text-slate-800">Trayson經銷管理系統</CardTitle>
           <CardDescription>登入管理後台</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>

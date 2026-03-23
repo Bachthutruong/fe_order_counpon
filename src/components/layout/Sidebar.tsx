@@ -33,7 +33,7 @@ const Sidebar = () => {
   return (
     <div className="w-64 h-full bg-slate-900 text-white flex flex-col">
       <div className="p-4 border-b border-slate-800">
-        <h1 className="text-xl font-bold">Jiudi 管理系統</h1>
+        <h1 className="text-xl font-bold">Trayson經銷管理系統</h1>
       </div>
       <div className="flex-1 py-4">
         <ul className="space-y-1">
