@@ -15,6 +15,7 @@ const Sidebar = () => {
   
   const adminLinks = [
     { name: '總覽', path: '/admin', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: '管理員', path: '/admin/admins', icon: <Users className="w-5 h-5" /> },
     { name: '經銷商', path: '/admin/agents', icon: <Users className="w-5 h-5" /> },
     { name: '折扣碼', path: '/admin/coupons', icon: <Ticket className="w-5 h-5" /> },
     { name: '訂單', path: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },

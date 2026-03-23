@@ -11,6 +11,7 @@ import ChangePassword from './pages/auth/ChangePassword';
 // Admin
 import AdminDashboard from './pages/admin/Dashboard';
 import Agents from './pages/admin/Agents';
+import Admins from './pages/admin/Admins';
 import ConfigRules from './pages/admin/ConfigRules';
 import AdminCoupons from './pages/admin/Coupons';
 import AdminOrders from './pages/admin/Orders';
@@ -26,7 +27,7 @@ const PrivateRoute = ({ children, role }: { children: React.ReactNode, role?: 'A
 
   if (loading) return <div>Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.isFirstLogin) return <Navigate to="/change-password" replace />;
+  if (user.role === 'AGENT' && user.isFirstLogin) return <Navigate to="/change-password" replace />;
   if (role && user.role !== role) {
     return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/agent'} replace />;
   }
@@ -51,6 +52,7 @@ function App() {
           }>
             <Route index element={<AdminDashboard />} />
             <Route path="agents" element={<Agents />} />
+            <Route path="admins" element={<Admins />} />
             <Route path="config" element={<ConfigRules />} />
             <Route path="coupons" element={<AdminCoupons />} />
             <Route path="orders" element={<AdminOrders />} />
